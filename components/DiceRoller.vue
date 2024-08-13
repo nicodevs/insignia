@@ -15,13 +15,13 @@ const mode = ref('NORMAL');
 
 function pushDiceRoll (numberOfDice) {
     db.ref('rolls').push({
-        ...roll(numberOfDice, mode.value),
+        ...rollDice(numberOfDice, mode.value),
         timestamp: Date.now(),
         player: useRoute().query.player
     });
 }
 
-function roll (numberOfDice, mode = 'NORMAL') {
+function rollDice (numberOfDice, mode = 'NORMAL') {
     const results = [];
     const diceToRoll = numberOfDice + (mode !== 'NORMAL' ? 1 : 0);
 
@@ -38,42 +38,46 @@ function roll (numberOfDice, mode = 'NORMAL') {
 </script>
 
 <template>
-    <div class="flex-1">
-        <div class="flex gap-2">
-            <button
-                v-for="option in diceOptions"
-                :key="option"
-                class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded"
-                @click="pushDiceRoll(option)">
-                Roll {{ option }}
-            </button>
-            <select
-                v-model="mode"
-                class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded">
-                <option
-                    v-for="option in modes"
-                    :key="option"
-                    :value="option">
-                    {{ option }}
-                </option>
-            </select>
-        </div>
-        <div class="text-xl grid gap-6 mt-8">
-            <div v-for="roll in rolls.toReversed()" :key="roll.timestamp">
-                <p><strong>{{ roll.player }}:</strong> {{ roll.total }}</p>
-                <div class="flex items-center text-3xl">
-                    <div class="flex flex-col">
-                        <DiceDisplay
-                            v-for="(number, index) in roll.insignias"
-                            :key="number"
-                            :number="number" />
-                    </div>
-                    <DiceDisplay
-                        v-for="(number, index) in roll.results"
-                        :key="number"
-                        :number="number" />
-                </div>
-            </div>
-        </div>
+  <div class="flex-1">
+    <div class="flex gap-2">
+      <button
+        v-for="option in diceOptions"
+        :key="option"
+        class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded"
+        @click="pushDiceRoll(option)">
+        Roll {{ option }}
+      </button>
+      <select
+        v-model="mode"
+        class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded">
+        <option
+          v-for="option in modes"
+          :key="option"
+          :value="option">
+          {{ option }}
+        </option>
+      </select>
     </div>
+    <div class="text-xl grid gap-6 mt-8">
+      <div
+        v-for="roll in rolls.toReversed()"
+        :key="roll.timestamp">
+        <p>
+          <strong>{{ roll.player }}:</strong> {{ roll.total }}
+        </p>
+        <div class="flex items-center text-3xl">
+          <div class="flex flex-col">
+            <DiceDisplay
+              v-for="(number, index) in roll.insignias"
+              :key="index"
+              :number="number" />
+          </div>
+          <DiceDisplay
+            v-for="(number, index) in roll.results"
+            :key="index"
+            :number="number" />
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
