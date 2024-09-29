@@ -35,6 +35,19 @@ function rollDice (numberOfDice, mode = 'NORMAL') {
 
     return { insignias, results, total };
 }
+
+function shouldDisplayGrey(number, insignias) {
+  if (insignias.length === 2) {
+    const [first, second] = insignias;
+    if (first === second) {
+      // If tied, pick one at random
+      return Math.random() < 0.5;
+    }
+    // Return true if the current number is the lowest
+    return number === Math.min(first, second);
+  }
+  return false;
+}
 </script>
 
 <template>
@@ -66,9 +79,10 @@ function rollDice (numberOfDice, mode = 'NORMAL') {
           <strong>{{ roll.player }}:</strong> {{ roll.total }}
         </p>
         <div class="flex items-center text-3xl">
-          <div class="flex flex-col">
+          <div class="flex flex-col text-red-600">
             <DiceDisplay
               v-for="(number, index) in roll.insignias"
+              :class="{ 'opacity-25': shouldDisplayGrey(number, roll.insignias) }"
               :key="index"
               :number="number" />
           </div>
