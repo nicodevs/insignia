@@ -1,5 +1,5 @@
 <template>
-  <div class="p-8 flex">
+  <div class="p-4 flex">
     <BattleMap />
     <DiceRoller />
   </div>

@@ -2,7 +2,9 @@
 import { db } from '../firebase'
 import { ref } from 'vue'
 
-const gridSize = 20
+const user = useRoute().query.player
+
+const gridSize = 15
 
 // Token list
 const tokens = ref([])
@@ -40,7 +42,7 @@ const moveToken = index => {
 
 // Function to add a new token
 const addToken = () => {
-  const newLabel = String.fromCharCode('A'.charCodeAt(0) + tokens.value.length)
+  const newLabel = prompt('Enter a new token label')
   db.ref('tokens').push({ label: newLabel, index: 0 })
 }
 
@@ -54,8 +56,10 @@ const removeToken = () => {
 </script>
 
 <template>
-  <div class="p-4 space-y-4">
-    <div class="space-x-2">
+  <div class="grid gap-4">
+    <div
+      v-if="user === 'GM'"
+      class="space-x-2">
       <button
         class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
         @click="addToken">
@@ -68,7 +72,7 @@ const removeToken = () => {
         Remove Token
       </button>
     </div>
-    <div class="w-full max-w-4xl">
+    <div class="w-full">
       <div style="display: flex; flex-wrap: wrap">
         <div
           v-for="rowIndex in gridSize"
@@ -77,7 +81,7 @@ const removeToken = () => {
           <div
             v-for="colIndex in gridSize"
             :key="colIndex"
-            class="w-6 h-6 border border-gray-300 flex items-center justify-center relative cursor-pointer"
+            class="w-10 h-10 border border-gray-300 flex items-center justify-center relative cursor-pointer"
             :class="{
               'bg-blue-100': selectedToken !== null && selectedToken.index === (rowIndex - 1) * gridSize + (colIndex - 1)
             }"
