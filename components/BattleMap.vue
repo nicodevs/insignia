@@ -56,7 +56,7 @@ const removeToken = () => {
 </script>
 
 <template>
-  <div class="grid gap-4">
+  <div class="flex flex-col gap-4">
     <div
       v-if="user === 'GM'"
       class="space-x-2">
