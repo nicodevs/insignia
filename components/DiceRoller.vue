@@ -33,17 +33,18 @@ function rollDice (numberOfDice, mode = 'NORMAL') {
     const insignias = results.splice(0, mode !== 'NORMAL' ? 2 : 1);
     const total = (mode === 'DISADVANTAGE' ? min(insignias) : max(insignias)) + sum(results);
 
-    return { insignias, results, total };
+    return { insignias, results, total, mode };
 }
 
-function shouldDisplayGrey(number, insignias) {
+function shouldDisplayGrey(index, number, insignias, mode) {
+  if (mode === 'NORMAL') return false;
+
   if (insignias.length === 2) {
     const [first, second] = insignias;
-    if (first === second) {
-      // If tied, pick one at random
-      return Math.random() < 0.5;
-    }
-    // Return true if the current number is the lowest
+
+    if (first === second) return index === 0;
+
+    if (mode === 'ADVANTAGE') return number === Math.max(first, second);
     return number === Math.min(first, second);
   }
   return false;
@@ -82,7 +83,7 @@ function shouldDisplayGrey(number, insignias) {
           <div class="flex flex-col text-red-600">
             <DiceDisplay
               v-for="(number, index) in roll.insignias"
-              :class="{ 'opacity-25': shouldDisplayGrey(number, roll.insignias) }"
+              :class="{ 'opacity-25': shouldDisplayGrey(index, number, roll.insignias, roll.mode) }"
               :key="index"
               :number="number" />
           </div>
