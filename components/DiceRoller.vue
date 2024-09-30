@@ -43,10 +43,10 @@ function shouldDisplayGrey(index, number, insignias, mode) {
     const [first, second] = insignias;
 
     if (first === second) return index === 0;
-
-    if (mode === 'ADVANTAGE') return number === Math.max(first, second);
+    if (mode === 'DISADVANTAGE') return number === Math.max(first, second);
     return number === Math.min(first, second);
   }
+
   return false;
 }
 </script>
